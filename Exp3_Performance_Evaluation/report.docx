@@ -34,3 +34,36 @@ Steps in the code
   7. Evaluate model performance
     - Predict outputs for test data.
     - Compute accuracy by comparing predicted and actual labels.
+
+Performan  Evaluation :-
+Epoch 1/10, Loss: 9.004741668701172
+Epoch 2/10, Loss: 5.189775466918945
+Epoch 3/10, Loss: 3.7902631759643555
+Epoch 4/10, Loss: 3.022671699523926
+Epoch 5/10, Loss: 2.551454782485962
+Epoch 6/10, Loss: 2.1966712474823
+Epoch 7/10, Loss: 1.9229856729507446
+Epoch 8/10, Loss: 1.7250666618347168
+Epoch 9/10, Loss: 1.5559110641479492
+Epoch 10/10, Loss: 1.4094676971435547
+Test Accuracy: 87.48%
+
+Metrics Used:
+  - Loss (Cross-Entropy Loss Curve): Should decrease over epochs, indicating learning.
+  - Test Accuracy: Measures how well the model generalizes to unseen data.
+
+Expected Observations:
+  - Training loss should decrease over epochs.
+  - Accuracy should improve as weights adjust during training.
+
+My Comments 
+
+Pros :-
+First time implementing a fully connected neural network in TensorFlow without Keras.
+Achieved high accuracy (87%-92%), proving the model can classify MNIST digits well.
+Learned how weights and biases are manually initialized and updated using gradient descent.
+
+Cons :- 
+SGD optimizer is slow: I can try Adam or RMSProp for better convergence.
+No batch normalization: adding it may improve performance and stability.
+Only one hidden layer: a deeper model might generalize better.
