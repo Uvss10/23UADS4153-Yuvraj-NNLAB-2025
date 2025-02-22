@@ -1,72 +1,53 @@
 import numpy as np
 
-class MLP:
-    def __init__(self, input_size, hidden_size, output_size, learning_rate=0.1, n_iter=10000):
-        self.learning_rate = learning_rate
-        self.n_iter = n_iter
-        
-        # Initialize weights
-        self.W1 = np.random.rand(input_size, hidden_size)  # Weights for input to hidden layer
-        self.b1 = np.zeros((1, hidden_size))               # Bias for hidden layer
-        self.W2 = np.random.rand(hidden_size, output_size) # Weights for hidden to output layer
-        self.b2 = np.zeros((1, output_size))               # Bias for output layer
+# Step Activation Function
+def step_function(x):
+    return np.where(x >= 0, 1, 0)
 
-    def sigmoid(self, x):
-        return 1 / (1 + np.exp(-x))
+# XOR Dataset
+X = np.array([[0,0], [0,1], [1,0], [1,1]])
+y = np.array([[0], [1], [1], [0]])  # Expected output
 
-    def sigmoid_derivative(self, x):
-        return x * (1 - x)
+# Network Parameters
+input_size = 2
+hidden_size = 2  # Two hidden neurons
+output_size = 1
+lr = 0.1  # Learning rate
+epochs = 10000  # Training iterations
 
-    def forward(self, X):
-        self.z1 = np.dot(X, self.W1) + self.b1
-        self.a1 = self.sigmoid(self.z1)
-        self.z2 = np.dot(self.a1, self.W2) + self.b2
-        self.a2 = self.sigmoid(self.z2)
-        return self.a2
+# Initialize weights and biases
+np.random.seed(42)
+W1 = np.random.randn(input_size, hidden_size)  # Input to hidden layer
+b1 = np.zeros((1, hidden_size))
+W2 = np.random.randn(hidden_size, output_size)  # Hidden to output layer
+b2 = np.zeros((1, output_size))
 
-    def backward(self, X, y):
-        # Calculate the error
-        output_error = y - self.a2
-        output_delta = output_error * self.sigmoid_derivative(self.a2)
+# Training loop (Manual Update Without Gradient)
+for epoch in range(epochs):
+    # Forward Pass
+    hidden_input = np.dot(X, W1) + b1
+    hidden_output = step_function(hidden_input)  # Apply Step Function
 
-        # Calculate the error for the hidden layer
-        hidden_error = output_delta.dot(self.W2.T)
-        hidden_delta = hidden_error * self.sigmoid_derivative(self.a1)
+    final_input = np.dot(hidden_output, W2) + b2
+    final_output = step_function(final_input)  # Step Activation for output
 
-        # Update weights and biases
-        self.W2 += self.a1.T.dot(output_delta) * self.learning_rate
-        self.b2 += np.sum(output_delta, axis=0, keepdims=True) * self.learning_rate
-        self.W1 += X.T.dot(hidden_delta) * self.learning_rate
-        self.b1 += np.sum(hidden_delta, axis=0, keepdims=True) * self.learning_rate
+    # Compute error
+    error = y - final_output
 
-    def fit(self, X, y):
-        for _ in range(self.n_iter):
-            self.forward(X)
-            self.backward(X, y)
+    # Manual Weight Update (since Step function is non-differentiable)
+    W2 += hidden_output.T.dot(error) * lr
+    b2 += np.sum(error, axis=0, keepdims=True) * lr
+    W1 += X.T.dot(error.dot(W2.T)) * lr
+    b1 += np.sum(error.dot(W2.T), axis=0, keepdims=True) * lr
 
-    def predict(self, X):
-        output = self.forward(X)
-        return np.round(output)  # Return binary output
+    # Print loss every 1000 epochs
+    if epoch % 1000 == 0:
+        loss = np.mean(error**2)
+        print(f"Epoch {epoch}, Loss: {loss:.5f}")
 
-# XOR Truth Table
-X_xor = np.array([[0, 0],
-                  [0, 1],
-                  [1, 0],
-                  [1, 1]])
-y_xor = np.array([[0],
-                  [1],
-                  [1],
-                  [0]])  # XOR outputs
-
-# Create and train the MLP
-mlp = MLP(input_size=2, hidden_size=2, output_size=1, learning_rate=0.1, n_iter=10000)
-mlp.fit(X_xor, y_xor)
-
-# Make predictions
-predictions = mlp.predict(X_xor)
-
-# Display results
-print("Predictions:")
-print(predictions)
-print("Actual:")
-print(y_xor)
+# Testing the trained model
+print("\nFinal Predictions:")
+for i in range(len(X)):
+    hidden_output = step_function(np.dot(X[i], W1) + b1)
+    output = step_function(np.dot(hidden_output, W2) + b2)
+    print(f"Input: {X[i]}, Predicted Output: {output[0]}, Expected: {y[i][0]}")
