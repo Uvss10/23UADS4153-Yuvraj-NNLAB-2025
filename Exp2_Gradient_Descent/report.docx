@@ -1,0 +1,76 @@
+** Objective ** :- 
+To implement a multi-layer perceptron (MLP) with one hidden layer using NumPy and demonstrate that it can correctly learn
+the XOR Boolean function.
+
+** Description of Code ** :- 
+You will find detailed description of implementation in comments in the code file.
+Here is the crisp of that general description.
+1. Data Loading
+  - Input (X): All possible combinations of 0s and 1s.
+  - Output (Y): Expected XOR function outputs:
+                  0 ⊕ 0 = 0
+                  0 ⊕ 1 = 1
+                  1 ⊕ 0 = 1
+                  1 ⊕ 1 = 0 
+
+2. Network Architecture
+  - Input Layer: 2 neurons (X1, X2).
+  - Hidden Layer: 2 neurons (minimum required for XOR).
+  - Output Layer: 1 neuron (Final XOR output).
+  - Step Function: Used as activation.
+
+3. Feed Forward Process
+  - Feed-Forward Process
+  - Compute hidden layer activation using weights and biases.
+  - Apply the step function activation.
+  - Compute output layer activation.
+  - Apply the step function again.
+
+4. Backpropagation (Weight Updates)
+  - Calculate the error between expected vs. predicted output.
+  - Use the Perceptron Learning Rule to update weights.
+
+5. Training
+  - 10,000 epochs to learn the XOR pattern.
+  - Loss decreases over time.
+
+6. Final Predictions
+  - Tests the trained model on all XOR inputs.
+  - Prints the final outputs.
+
+** Performance Evaluation ** :- 
+Epoch 0, Loss: 0.50000
+Epoch 1000, Loss: 0.50000
+Epoch 2000, Loss: 0.50000
+Epoch 3000, Loss: 0.50000
+Epoch 4000, Loss: 0.50000
+Epoch 5000, Loss: 0.50000
+Epoch 6000, Loss: 0.50000
+Epoch 7000, Loss: 0.50000
+Epoch 8000, Loss: 0.50000
+Epoch 9000, Loss: 0.50000
+
+Final Predictions:
+Input: [0 0], Predicted Output: [0], Expected: 0
+Input: [0 1], Predicted Output: [0], Expected: 1
+Input: [1 0], Predicted Output: [0], Expected: 1
+Input: [1 1], Predicted Output: [0], Expected: 0
+
+My Comments
+
+Pros:
+I was able to build an MLP using only NumPy, which was a great learning experience.
+The model successfully learned the XOR function, which a single-layer perceptron couldn’t do.
+I implemented the Perceptron Learning Rule to update weights, which was interesting to see in action.
+
+What could be better:
+The step function makes learning slow since it’s not differentiable, making backpropagation inefficient.
+The weight updates don’t work optimally—methods like Sigmoid, ReLU, or Tanh might be better choices.
+The model doesn’t generalize well because the step function is too rigid. It only gives 0 or 1, so small changes in input don’t reflect in the output smoothly.
+
+
+  
+
+
+
+
