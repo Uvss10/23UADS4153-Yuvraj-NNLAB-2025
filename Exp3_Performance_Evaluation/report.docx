@@ -1,0 +1,36 @@
+Objective :- 
+Implement a three-layer neural network using Tensor flow library (only, no keras) to classify MNIST 
+handwritten digits dataset. Demonstrate the implementation of feed-forward and back-propagation approaches  
+
+Description of the Model:-
+  - The input layer consists of 784 neurons (since MNIST images are 28×28 pixels, flattened).
+  - The hidden layer has 128 neurons, using the ReLU activation function to introduce non-linearity.
+  - The output layer has 10 neurons (one for each digit from 0-9), using the softmax function to convert outputs into probabilities.
+  - Cross-entropy loss is used as the loss function to measure prediction errors.
+  - SGD optimizer updates weights using backpropagation.
+  - The model is trained for 10 epochs using mini-batches of size 128.
+
+Python Implementation Description :- 
+Steps in the code
+  1. Load & preprocess data
+    - Download the MNIST dataset.
+    - Normalize pixel values between 0 and 1.
+    - One-hot encode the labels (convert digit labels into a vector of size 10).
+  1. Initialize weights and biases
+    - Randomly initialize weights for the hidden and output layers.
+    - Initialize biases for each layer.
+  3. Define activation functions
+    - ReLU (Rectified Linear Unit) for the hidden layer (keeps positive values and zeroes out negatives).
+    - Softmax for the output layer (converts logits into probabilities).
+  4. Define feed-forward function
+    - Multiply inputs with weights, add biases, apply activation functions, and compute the final output.
+  5. Define loss function and optimizer
+    - Use cross-entropy loss for classification.
+    - Optimize with SGD (stochastic gradient descent).
+  6. Train the model using mini-batches
+    - Loop through the dataset in batches of 128.
+    - Compute gradients and update weights using backpropagation.
+    - Print loss after each epoch.
+  7. Evaluate model performance
+    - Predict outputs for test data.
+    - Compute accuracy by comparing predicted and actual labels.
