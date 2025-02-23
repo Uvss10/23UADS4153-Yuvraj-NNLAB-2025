@@ -26,7 +26,7 @@ Here is the crisp of that general description.
   - Compute output layer activation.
   - Apply the step function again.
 
-4. Backpropagation (Weight Updates)
+4. Weight Updates
   - Calculate the error between expected vs. predicted output.
   - Use the Perceptron Learning Rule to update weights.
 
