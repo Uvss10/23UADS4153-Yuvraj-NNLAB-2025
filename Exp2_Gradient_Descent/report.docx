@@ -2,71 +2,68 @@
 To implement a multi-layer perceptron (MLP) with one hidden layer using NumPy and demonstrate that it can correctly learn
 the XOR Boolean function.
 
+** Description of the Model **
+For this experiment,an MLP is designed with one hidden layer to solve the XOR function, which is a non-linearly separable problem. Since a single-layer perceptron cannot solve XOR, there is need to introduce hidden layer with multiple neurons .
+
+Model Components
+
+Input Layer: 2 neurons (for two input bits)
+
+Hidden Layer: 4 perceptrons (to learn intermediate patterns)
+
+Activation Function: Step function (binary output)
+
+Output Layer**: 1 perceptron (final XOR output)
+
 ** Description of Code ** :- 
-You will find detailed description of implementation in comments in the code file.
-Here is the crisp of that general description.
-1. Data Loading
-  - Input (X): All possible combinations of 0s and 1s.
-  - Output (Y): Expected XOR function outputs:
-                  0 ⊕ 0 = 0
-                  0 ⊕ 1 = 1
-                  1 ⊕ 0 = 1
-                  1 ⊕ 1 = 0 
+1.   Perceptron Class:
 
-2. Network Architecture
-  - Input Layer: 2 neurons (X1, X2).
-  - Hidden Layer: 2 neurons (minimum required for XOR).
-  - Output Layer: 1 neuron (Final XOR output).
-  - Step Function: Used as activation.
+        *   Implements a simple perceptron with step activation function.
+        *   Performs weight updates using the perceptron learning rule.
 
-3. Feed Forward Process
-  - Feed-Forward Process
-  - Compute hidden layer activation using weights and biases.
-  - Apply the step function activation.
-  - Compute output layer activation.
-  - Apply the step function again.
 
-4. Weight Updates
-  - Calculate the error between expected vs. predicted output.
-  - Use the Perceptron Learning Rule to update weights.
+2.   Hidden Layer Training:
 
-5. Training
-  - 10,000 epochs to learn the XOR pattern.
-  - Loss decreases over time.
+        *   Trains 4 separate perceptrons to learn intermediate patterns for XOR.
 
-6. Final Predictions
-  - Tests the trained model on all XOR inputs.
-  - Prints the final outputs.
+
+3.  Final Output Layer Training:
+
+      *   Uses the outputs from the hidden layer as inputs to a final perceptron.
+      *   This final perceptron learns the XOR function.
+
 
 ** Performance Evaluation ** :- 
-Epoch 0, Loss: 0.50000
-Epoch 1000, Loss: 0.50000
-Epoch 2000, Loss: 0.50000
-Epoch 3000, Loss: 0.50000
-Epoch 4000, Loss: 0.50000
-Epoch 5000, Loss: 0.50000
-Epoch 6000, Loss: 0.50000
-Epoch 7000, Loss: 0.50000
-Epoch 8000, Loss: 0.50000
-Epoch 9000, Loss: 0.50000
 
-Final Predictions:
-Input: [0 0], Predicted Output: [0], Expected: 0
-Input: [0 1], Predicted Output: [0], Expected: 1
-Input: [1 0], Predicted Output: [0], Expected: 1
-Input: [1 1], Predicted Output: [0], Expected: 0
+XOR Truth Table Predictions:
+ X1  X2 |  y_actual  y_pred
+---------------------------
+ 0   0  |     0        0
+ 0   1  |     1        1
+ 1   0  |     1        1
+ 1   1  |     0        0
+Predicted output for [0 0]: 0
+Final Perceptron Accuracy: 100.00%
 
-My Comments
+2025-02-23 22:20:20.273 python[9000:215364] +[IMKClient subclass]: chose IMKClient_Modern
+2025-02-23 22:20:20.273 python[9000:215364] +[IMKInputSession subclass]: chose IMKInputSession_Modern
 
-Pros:
-I was able to build an MLP using only NumPy, which was a great learning experience.
-The model successfully learned the XOR function, which a single-layer perceptron couldn’t do.
-I implemented the Perceptron Learning Rule to update weights, which was interesting to see in action.
+** Accuracy ** :
+- 100% accuracy shows that the perceptron has perfectly learned and classified the XOR logic gate.
 
-What could be better:
-The step function makes learning slow since it’s not differentiable, making backpropagation inefficient.
-The weight updates don’t work optimally—methods like Sigmoid, ReLU, or Tanh might be better choices.
-The model doesn’t generalize well because the step function is too rigid. It only gives 0 or 1, so small changes in input don’t reflect in the output smoothly.
+** Confusion Matrix **:
+- Shows correct classifications for XOR, provding MLP learns nonlinear functions.
+
+** Comment **
+- ** Limitations: **
+  * A manually designed 4-perceptron hidden layer works for XOR but may not generalize well to more complex problems.
+  * Training with a manually defined structure takes longer than using a standard multi-layer perceptron with backpropagation.
+  * The use of `tanh` activation provides smoother updates but may still suffer from vanishing gradients in deeper networks.
+
+- ** Scope for Improvement: **
+  * Implementing a full **feedforward neural network with backpropagation** can automatically learn the hidden layer without manual tuning.
+  * Using a Sigmoid or ReLU activation function instead of `tanh` can improve gradient flow and training efficiency.
+  * Applying **batch training** instead of updating weights after each sample can stabilize training.
 
 
   
