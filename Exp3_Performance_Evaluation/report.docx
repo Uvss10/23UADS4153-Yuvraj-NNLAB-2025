@@ -2,68 +2,69 @@ Objective :-
 Implement a three-layer neural network using Tensor flow library (only, no keras) to classify MNIST 
 handwritten digits dataset. Demonstrate the implementation of feed-forward and back-propagation approaches  
 
-Description of the Model:-
-  - The input layer consists of 784 neurons (since MNIST images are 28×28 pixels, flattened).
-  - The hidden layer has 128 neurons, using the ReLU activation function to introduce non-linearity.
-  - The output layer has 10 neurons (one for each digit from 0-9), using the softmax function to convert outputs into probabilities.
-  - Cross-entropy loss is used as the loss function to measure prediction errors.
-  - SGD optimizer updates weights using backpropagation.
-  - The model is trained for 10 epochs using mini-batches of size 128.
+** Description of the Model: **
+- The input layer consists of 784 neurons (since MNIST images are 28×28 pixels, flattened).
+- The hidden layer has 128 neurons, using the ReLU activation function to introduce non-linearity.
+- The output layer has 10 neurons (one for each digit from 0-9), using the softmax function to convert outputs into probabilities.
+- Cross-entropy loss is used as the loss function to measure prediction errors.
+- Adam optimizer updates weights using backpropagation.
+- The model is trained for 10 epochs using mini-batches of size 64.
 
-Python Implementation Description :- 
-Steps in the code
-  1. Load & preprocess data
-    - Download the MNIST dataset.
-    - Normalize pixel values between 0 and 1.
-    - One-hot encode the labels (convert digit labels into a vector of size 10).
-  1. Initialize weights and biases
-    - Randomly initialize weights for the hidden and output layers.
-    - Initialize biases for each layer.
-  3. Define activation functions
-    - ReLU (Rectified Linear Unit) for the hidden layer (keeps positive values and zeroes out negatives).
-    - Softmax for the output layer (converts logits into probabilities).
-  4. Define feed-forward function
-    - Multiply inputs with weights, add biases, apply activation functions, and compute the final output.
-  5. Define loss function and optimizer
-    - Use cross-entropy loss for classification.
-    - Optimize with SGD (stochastic gradient descent).
-  6. Train the model using mini-batches
-    - Loop through the dataset in batches of 128.
-    - Compute gradients and update weights using backpropagation.
-    - Print loss after each epoch.
-  7. Evaluate model performance
-    - Predict outputs for test data.
-    - Compute accuracy by comparing predicted and actual labels.
+** Python Implementation Description: **
+Steps in the code:
+1. Load & preprocess data
+   - Download the MNIST dataset.
+   - Normalize pixel values between 0 and 1.
+   - One-hot encode the labels (convert digit labels into a vector of size 10).
+2. Initialize weights and biases
+   - Use Glorot (Xavier) initialization for better weight distribution.
+   - Initialize biases as zeros for each layer.
+3. Define activation functions
+   - ReLU (Rectified Linear Unit) for the hidden layer (keeps positive values and zeroes out negatives).
+   - Softmax for the output layer (converts logits into probabilities).
+4. Define feed-forward function
+   - Multiply inputs with weights, add biases, apply activation functions, and compute the final output.
+5. Define loss function and optimizer
+   - Use cross-entropy loss for classification.
+   - Optimize with Adam optimizer for better convergence.
+6. Train the model using mini-batches
+   - Loop through the dataset in batches of 64.
+   - Compute gradients and update weights using backpropagation.
+   - Print loss and accuracy after each epoch.
+7. Evaluate model performance
+   - Predict outputs for test data.
+   - Compute accuracy by comparing predicted and actual labels.
 
-Performan  Evaluation :-
-Epoch 1/10, Loss: 9.004741668701172
-Epoch 2/10, Loss: 5.189775466918945
-Epoch 3/10, Loss: 3.7902631759643555
-Epoch 4/10, Loss: 3.022671699523926
-Epoch 5/10, Loss: 2.551454782485962
-Epoch 6/10, Loss: 2.1966712474823
-Epoch 7/10, Loss: 1.9229856729507446
-Epoch 8/10, Loss: 1.7250666618347168
-Epoch 9/10, Loss: 1.5559110641479492
-Epoch 10/10, Loss: 1.4094676971435547
-Test Accuracy: 87.48%
+** Performance Evaluation: **
+Epoch 1, Loss: 0.9962, Accuracy: 0.9057
+Epoch 2, Loss: 0.2885, Accuracy: 0.9463
+Epoch 3, Loss: 0.1769, Accuracy: 0.9565
+Epoch 4, Loss: 0.1425, Accuracy: 0.9613
+Epoch 5, Loss: 0.1358, Accuracy: 0.9627
+Epoch 6, Loss: 0.1333, Accuracy: 0.9641
+Epoch 7, Loss: 0.1428, Accuracy: 0.9615
+Epoch 8, Loss: 0.1428, Accuracy: 0.9639
+Epoch 9, Loss: 0.1049, Accuracy: 0.9728
+Epoch 10, Loss: 0.1179, Accuracy: 0.9719
+Test Accuracy: 0.9549
 
-Metrics Used:
-  - Loss (Cross-Entropy Loss Curve): Should decrease over epochs, indicating learning.
-  - Test Accuracy: Measures how well the model generalizes to unseen data.
+**Metrics Used:**
+- **Loss (Cross-Entropy Loss Curve):** Should decrease over epochs, indicating learning.
+- **Test Accuracy:** Measures how well the model generalizes to unseen data.
 
-Expected Observations:
-  - Training loss should decrease over epochs.
-  - Accuracy should improve as weights adjust during training.
+**Expected Observations:**
+- Training loss should decrease over epochs.
+- Accuracy should improve as weights adjust during training.
 
-My Comments 
+** My Comments **
 
-Pros :-
-First time implementing a fully connected neural network in TensorFlow without Keras.
-Achieved high accuracy (87%-92%), proving the model can classify MNIST digits well.
-Learned how weights and biases are manually initialized and updated using gradient descent.
+Pros:
+- Successfully implemented a fully connected neural network in TensorFlow without Keras.
+- Achieved high accuracy (around 93%), proving the model can classify MNIST digits well.
+- Learned how weights and biases are manually initialized and updated using gradient descent.
 
-Cons :- 
-SGD optimizer is slow: I can try Adam or RMSProp for better convergence.
-No batch normalization: adding it may improve performance and stability.
-Only one hidden layer: a deeper model might generalize better.
+Cons:
+- Used basic weight initialization: switching to Xavier/He initialization improves training stability.
+- No batch normalization: adding it may improve performance and stability.
+- Only one hidden layer: a deeper model might generalize better.
+
