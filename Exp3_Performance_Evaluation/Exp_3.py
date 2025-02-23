@@ -1,77 +1,74 @@
 import tensorflow as tf
-from tensorflow.keras.datasets import mnist
 import numpy as np
+from tensorflow.keras.datasets import mnist
 
-# Load MNIST dataset
+# Load the MNIST dataset
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 # Preprocess the data
-x_train = x_train.reshape(-1, 28 * 28).astype(np.float32) / 255.0  # Flatten and normalize
-x_test = x_test.reshape(-1, 28 * 28).astype(np.float32) / 255.0    # Flatten and normalize
-y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)   # One-hot encode labels
-y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)     # One-hot encode labels
+x_train = x_train.reshape(-1, 28 * 28).astype(np.float32) / 255.0
+x_test = x_test.reshape(-1, 28 * 28).astype(np.float32) / 255.0
 
-# Define the neural network architecture
-input_size = 28 * 28  # Input layer size (flattened MNIST images)
-hidden_size = 128     # Hidden layer size
-output_size = 10      # Output layer size (10 classes for digits 0-9)
+# One-hot encode the labels
+num_classes = 10
+y_train = np.eye(num_classes)[y_train]
+y_test = np.eye(num_classes)[y_test]
+
+# Define hyperparameters
+input_size = 28 * 28  # 784
+hidden_size = 128      # Number of neurons in the hidden layer
+output_size = num_classes  # 10 classes
+learning_rate = 0.01
+num_epochs = 10
+batch_size = 64
 
 # Initialize weights and biases
-weights = {
-    'hidden': tf.Variable(tf.random.normal([input_size, hidden_size])),
-    'output': tf.Variable(tf.random.normal([hidden_size, output_size]))
-}
-biases = {
-    'hidden': tf.Variable(tf.random.normal([hidden_size])),
-    'output': tf.Variable(tf.random.normal([output_size]))
-}
+W1 = tf.Variable(tf.random.normal([input_size, hidden_size]))
+b1 = tf.Variable(tf.random.normal([hidden_size]))
+W2 = tf.Variable(tf.random.normal([hidden_size, output_size]))
+b2 = tf.Variable(tf.random.normal([output_size]))
 
-# Define the activation function (ReLU for hidden layer, softmax for output layer)
-def relu(x):
-    return tf.maximum(0, x)
-
-def softmax(x):
-    return tf.exp(x) / tf.reduce_sum(tf.exp(x), axis=1, keepdims=True)
-
-# Define the feed-forward function
-def feed_forward(x):
-    hidden_layer = relu(tf.matmul(x, weights['hidden']) + biases['hidden'])
-    output_layer = tf.matmul(hidden_layer, weights['output']) + biases['output']
-    return output_layer
+# Define the feed-forward operation
+@tf.function
+def feed_forward(X):
+    layer_1 = tf.add(tf.matmul(X, W1), b1)
+    layer_1 = tf.nn.relu(layer_1)  # Activation function
+    out_layer = tf.add(tf.matmul(layer_1, W2), b2)
+    return out_layer
 
 # Define the loss function (cross-entropy)
-def cross_entropy_loss(y_true, y_pred):
-    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_true, logits=y_pred))
+def compute_loss(logits, labels):
+    return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
 
-# Define the optimizer (gradient descent)
-learning_rate = 0.01
-optimizer = tf.optimizers.SGD(learning_rate)
+# Define the optimizer
+optimizer = tf.optimizers.Adam(learning_rate=learning_rate)
+
+# Define accuracy
+def compute_accuracy(logits, labels):
+    correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
+    return tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 # Training the model
-epochs = 10
-batch_size = 128
+for epoch in range(num_epochs):
+    num_batches = int(x_train.shape[0] / batch_size)
+    for i in range(num_batches):
+        batch_x = x_train[i * batch_size:(i + 1) * batch_size]
+        batch_y = y_train[i * batch_size:(i + 1) * batch_size]
 
-for epoch in range(epochs):
-    for i in range(0, len(x_train), batch_size):
-        # Get a batch of data
-        x_batch = x_train[i:i + batch_size]
-        y_batch = y_train[i:i + batch_size]
-
-        # Perform forward pass
         with tf.GradientTape() as tape:
-            y_pred = feed_forward(x_batch)
-            loss = cross_entropy_loss(y_batch, y_pred)
+            logits = feed_forward(batch_x)
+            loss = compute_loss(logits, batch_y)
 
-        # Perform backpropagation
-        gradients = tape.gradient(loss, list(weights.values()) + list(biases.values()))
-        optimizer.apply_gradients(zip(gradients, list(weights.values()) + list(biases.values())))
+        gradients = tape.gradient(loss, [W1, b1, W2, b2])
+        optimizer.apply_gradients(zip(gradients, [W1, b1, W2, b2]))
 
-    # Print loss for each epoch
-    print(f"Epoch {epoch + 1}/{epochs}, Loss: {loss.numpy()}")
+    # Calculate loss and accuracy on the training set
+    train_logits = feed_forward(x_train)
+    train_loss = compute_loss(train_logits, y_train)
+    train_accuracy = compute_accuracy(train_logits, y_train)
+    print(f'Epoch {epoch + 1}, Loss: {train_loss:.4f}, Accuracy: {train_accuracy:.4f}')
 
 # Evaluate the model on the test set
-y_pred_test = feed_forward(x_test)
-predicted_labels = tf.argmax(y_pred_test, axis=1)
-true_labels = tf.argmax(y_test, axis=1)
-accuracy = tf.reduce_mean(tf.cast(tf.equal(predicted_labels, true_labels), tf.float32))
-print(f"Test Accuracy: {accuracy.numpy() * 100:.2f}%")
+test_logits = feed_forward(x_test)
+test_accuracy = compute_accuracy(test_logits, y_test)
+print(f'Test Accuracy: {test_accuracy:.4f}')
